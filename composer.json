@@ -1,5 +1,5 @@
 {
-    "name": "suffi/naumen-rest",
+    "name": "dmitry-suffi/naumen-rest",
     "description": "Работа с рест апи наумена",
     "keywords": ["rest api", "naumen"],
     "license": "MIT",
