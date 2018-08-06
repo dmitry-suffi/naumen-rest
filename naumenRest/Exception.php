@@ -8,5 +8,4 @@ namespace suffi\naumenRest;
  */
 class Exception extends \Exception
 {
-
 }

@@ -12,7 +12,7 @@ class XmlParser extends Parser
     /**
      * {@inheritdoc}
      */
-    public function parseResult($data):array
+    public function parseResult($data): array
     {
         if (!$data) {
             return [];
@@ -47,10 +47,10 @@ class XmlParser extends Parser
         return $data ? trim($this->xmlEncode($data)) : '';
     }
 
-    private function xmlEncode ($array, $node = null, $headNode = '', $attribute = false) {
+    private function xmlEncode($array, $node = null, $headNode = '', $attribute = false)
+    {
         $root = '';
         if (is_null($node)) {
-
             $root = $array['root'] ?? '';
             unset($array['root']);
 
@@ -60,7 +60,7 @@ class XmlParser extends Parser
             } else {
                 $headNode = $root ?? 'root';
             }
-            $node = new \SimpleXMLElement('<?xml version="1.0" encoding="UTF-8" standalone="yes"?><' . $headNode. '></' . $headNode . '>', null);
+            $node = new \SimpleXMLElement('<?xml version="1.0" encoding="UTF-8" standalone="yes"?><' . $headNode . '></' . $headNode . '>', null);
         }
         if (is_array($array) && count($array) == 1 && isset($array[0])) {
             $array = $array[0];
@@ -74,14 +74,15 @@ class XmlParser extends Parser
             $headNode = substr($headNode, 0, -1);
         }
 
-        if (is_array($array) && count($array) == 1 && isset($array[$headNode]) && is_array($array[$headNode]) && isset($array[$headNode][0])) {
-            $attr = true;
-        } else {
-            $attr = false;
+        $attr = false;
+        if (is_array($array) && count($array) == 1) {
+            if (isset($array[$headNode]) && is_array($array[$headNode]) && isset($array[$headNode][0])) {
+                $attr = true;
+            }
         }
-        
+
         foreach ($array as $key => $value) {
-            if(is_numeric($key)) {
+            if (is_numeric($key)) {
                 $key = $headNode;
                 if ($root) {
                     if (is_array($value) && count($value) == 1) {

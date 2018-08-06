@@ -2,7 +2,6 @@
 
 namespace suffi\naumenRest;
 
-
 use suffi\naumenRest\parser\JsonParser;
 use suffi\naumenRest\parser\Parser;
 use suffi\naumenRest\parser\XmlParser;
@@ -59,7 +58,7 @@ class Request
      */
     private $errorStatuses = [
         '204' => 'Нет данных',
-	    '209' => 'Конфликт данных',
+        '209' => 'Конфликт данных',
         '300' => 'Ошибка! Множественный выбор',
         '400' => 'Неверный запрос или отсутствует параметр запроса',
         '401' => 'Пользователь не авторизован',
@@ -151,8 +150,8 @@ class Request
     public function getParser()
     {
         return $this->parser;
-    }    
-    
+    }
+
     /**
      * Код ошибки
      * @return string
@@ -177,7 +176,7 @@ class Request
      * @param $parse
      * @return mixed
      */
-    final protected function _get($getParams, $parse = true)
+    final protected function requestGet($getParams, $parse = true)
     {
         $this->getCurl($getParams);
 
@@ -193,7 +192,7 @@ class Request
      * @return mixed
      * @throws Exception
      */
-    final protected function _post($postParams, $getParams = '', $returnHeaderLocation = false, $prepared = true)
+    final protected function requestPost($postParams, $getParams = '', $returnHeaderLocation = false, $prepared = true)
     {
         if (!$postParams) {
             throw new Exception('Не заданы данные для отправки!');
@@ -207,7 +206,8 @@ class Request
             curl_setopt($this->curl, CURLOPT_HEADER, 1);
         }
         curl_setopt($this->curl, CURLOPT_POST, true);
-        curl_setopt($this->curl, CURLOPT_POSTFIELDS, $prepared ? $this->parser->prepareData($postParams) : $this->prepareDefault($postParams));
+        $body = $prepared ? $this->parser->prepareData($postParams) : $this->prepareDefault($postParams);
+        curl_setopt($this->curl, CURLOPT_POSTFIELDS, $body);
 
         return $this->execCurl($returnHeaderLocation ? 'location' : 'parser');
     }
@@ -219,7 +219,7 @@ class Request
      * @return mixed
      * @throws Exception
      */
-    final protected function _put($postParams, $getParams = '')
+    final protected function requestPut($postParams, $getParams = '')
     {
         if (!$postParams) {
             throw new Exception('Не заданы данные для отправки!');
@@ -238,7 +238,7 @@ class Request
      * @param $getParams
      * @return mixed
      */
-    final protected function _delete($postParams = [], $getParams)
+    final protected function requestDelete($postParams = [], $getParams = '')
     {
         $this->getCurl($getParams);
 
@@ -264,7 +264,8 @@ class Request
 
         $getParams = preg_replace('/\s+/', '%20', $getParams);
 
-        curl_setopt($this->curl, CURLOPT_URL, trim($this->pmsUrl, '/') . '/' . $this->format . ($getParams ?? $this->url));
+        $url = trim($this->pmsUrl, '/') . '/' . $this->format . ($getParams ?? $this->url);
+        curl_setopt($this->curl, CURLOPT_URL, $url);
 
         if ($prepared) {
             if ($this->parser->getFormatHeaders()) {
@@ -273,10 +274,8 @@ class Request
         }
 
         curl_setopt($this->curl, CURLOPT_HTTPHEADER, $headers);
-
         curl_setopt($this->curl, CURLOPT_RETURNTRANSFER, true);
         curl_setopt($this->curl, CURLOPT_FOLLOWLOCATION, true);
-
         curl_setopt($this->curl, CURLOPT_USERPWD, $this->username . ':' . $this->password);
         curl_setopt($this->curl, CURLOPT_HTTPAUTH, CURLAUTH_BASIC);
     }
@@ -306,7 +305,8 @@ class Request
         }
 
         if ($parse == 'location') {
-            preg_match_all('/Location: ' . preg_quote(trim($this->pmsUrl, '/') . '/' . $this->format, '/') . '(.*?)\/([^\/\r\n]+)\r\n/', $result, $m);
+            $pmsUrl = preg_quote(trim($this->pmsUrl, '/') . '/' . $this->format, '/');
+            preg_match_all('/Location: ' . $pmsUrl . '(.*?)\/([^\/\r\n]+)\r\n/', $result, $m);
             return $m[2][0] ?? '';
         } else {
             if ($parse == 'parser') {
@@ -314,9 +314,7 @@ class Request
             } else {
                 return $result;
             }
-
         }
-
     }
 
     /**
@@ -335,7 +333,5 @@ class Request
             $query = ltrim($query, '&');
             return $query;
         }
-
     }
-
 }

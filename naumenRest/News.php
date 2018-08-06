@@ -12,12 +12,12 @@ class News extends Request
     /**
      * Обычная
      */
-    const importanceNormal = 'NORMAL';
+    const IMPORTANCE_NORMAL = 'NORMAL';
 
     /**
      * Важная
      */
-    const importanceHigh = 'HIGH';
+    const IMPORTANCE_HIGH = 'HIGH';
 
     /**
      * Дополнительный урл модуля
@@ -54,7 +54,7 @@ class News extends Request
      */
     public function get($id)
     {
-        return $this->_get('/news/' . $id);
+        return $this->requestGet('/news/' . $id);
     }
 
     /**
@@ -66,7 +66,7 @@ class News extends Request
     public function create($data)
     {
         $data['owner'] = $data['owner'] ?? $this->projectUuid;
-        $uiid = $this->_post(['news' => $data], '/news/?owner=' . $this->projectUuid, true);
+        $uiid = $this->requestPost(['news' => $data], '/news/?owner=' . $this->projectUuid, true);
         if ($this->getErrorCode()) {
             return false;
         } else {
@@ -82,7 +82,7 @@ class News extends Request
      */
     public function update($data)
     {
-        $this->_put(['news' => $data], '/news/');
+        $this->requestPut(['news' => $data], '/news/');
         if ($this->getErrorCode()) {
             return false;
         } else {
@@ -97,7 +97,7 @@ class News extends Request
      */
     public function delete($id)
     {
-        $this->_delete([], '/news/' . $id);
+        $this->requestDelete([], '/news/' . $id);
         if ($this->getErrorCode()) {
             return false;
         } else {
@@ -128,18 +128,17 @@ class News extends Request
         if ($full) {
             $data = [];
             $i = 1;
-            do{
-                $pageData = $this->_get($getParams . '&page=' . $i);
+            do {
+                $pageData = $this->requestGet($getParams . '&page=' . $i);
                 $i++;
                 if (isset($pageData['newsitem'])) {
                     foreach ($pageData['newsitem'] as $value) {
                         $data['newsitem'][] = $value;
                     }
                 }
-            }while(count($pageData['newsitem']) > 0 && !$this->getError());
-
+            } while (count($pageData['newsitem']) > 0 && !$this->getError());
         } else {
-            $data = $this->_get($getParams);
+            $data = $this->requestGet($getParams);
         }
 
         if (!isset($data['count']) && isset($data['newsitem'])) {
@@ -151,7 +150,5 @@ class News extends Request
         }
 
         return $data;
-
     }
-
 }

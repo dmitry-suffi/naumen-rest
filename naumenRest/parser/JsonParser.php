@@ -12,7 +12,7 @@ class JsonParser extends Parser
     /**
      * {@inheritdoc}
      */
-    public function parseResult($data):array
+    public function parseResult($data): array
     {
         if (!$data) {
             return [];
@@ -25,9 +25,10 @@ class JsonParser extends Parser
         return $data;
     }
 
-    private function changeArray(array &$array) {
+    private function changeArray(array &$array)
+    {
         foreach ($array as $key => &$value) {
-            if (is_array($value)) {                
+            if (is_array($value)) {
                 if (count($value) == 1 && isset($value['value'])) {
                     $value = $value['value'];
                 } else {
@@ -69,7 +70,6 @@ class JsonParser extends Parser
             } else {
                 $data = $values;
             }
-
         }
 
         if (!$data) {
@@ -78,5 +78,4 @@ class JsonParser extends Parser
 
         return json_encode($data);
     }
-
 }

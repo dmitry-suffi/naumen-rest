@@ -10,28 +10,28 @@ namespace suffi\naumenRest;
 class CallCases extends Request
 {
     /** Статус "Новый" */
-    const statusNew = 'new';
+    const STATUS_NEW = 'new';
 
     /** Статус "Недозвон" */
-    const statusUnavailable = 'unavailable';
+    const STATUS_UNAVAILABLE = 'unavailable';
 
     /** Статус "Отказ" */
-    const statusRefused = 'refused';
+    const STATUS_REFUSED = 'refused';
 
     /** Статус "Дозвон" */
-    const statusAvailable = 'available';
+    const STATUS_AVAILABLE = 'available';
 
     /** Статус "Отложен" */
-    const statusAdjourned = 'adjourned';
+    const STATUS_ADJOURNED = 'adjourned';
 
     /** Статус "Выполнен" */
-    const statusFinished = 'finished';
+    const STATUS_FINISHED = 'finished';
 
     /** Статус "Выполнен/не реализован" */
-    const statusNRcompleted = 'completed_nr';
+    const STATUS_COMPLETED_NR = 'completed_nr';
 
     /** Статус "Выполнен/реализован" */
-    const statusRcompleted = 'completed_r';
+    const STATUS_COMPLETED_R = 'completed_r';
 
     /**
      * Дополнительный урл модуля
@@ -68,7 +68,7 @@ class CallCases extends Request
      */
     public function get($id)
     {
-        return $this->_get('/callcases/' . $id);
+        return $this->requestGet('/callcases/' . $id);
     }
 
     /**
@@ -79,7 +79,7 @@ class CallCases extends Request
      */
     public function create($data)
     {
-        $uiid = $this->_post(['callcase' => $data], '/callcases/?project=' . $this->projectUuid, true);
+        $uiid = $this->requestPost(['callcase' => $data], '/callcases/?project=' . $this->projectUuid, true);
         if ($this->getErrorCode()) {
             return false;
         } else {
@@ -95,7 +95,7 @@ class CallCases extends Request
      */
     public function update($data)
     {
-        $this->_put(['callcase' => $data], '/callcases/');
+        $this->requestPut(['callcase' => $data], '/callcases/');
         if ($this->getErrorCode()) {
             return false;
         } else {
@@ -110,7 +110,7 @@ class CallCases extends Request
      */
     public function delete($id)
     {
-        $this->_delete([], '/callcases/' . $id);
+        $this->requestDelete([], '/callcases/' . $id);
         if ($this->getErrorCode()) {
             return false;
         } else {
@@ -125,7 +125,7 @@ class CallCases extends Request
      */
     public function getState($id)
     {
-        return $this->_get('/callcases/' . $id . '/get-state', false);
+        return $this->requestGet('/callcases/' . $id . '/get-state', false);
     }
 
     /**
@@ -144,7 +144,7 @@ class CallCases extends Request
             $params['date'] = date('Y-m-d\TH:i:s');
         }
 
-        $this->_post($params, '/callcases/' . $id . '/set-state', false, false);
+        $this->requestPost($params, '/callcases/' . $id . '/set-state', false, false);
         if ($this->getErrorCode()) {
             return false;
         } else {
@@ -177,18 +177,17 @@ class CallCases extends Request
         if ($full) {
             $data = [];
             $i = 1;
-            do{
-                $pageData = $this->_get($getParams . '&page=' . $i);
+            do {
+                $pageData = $this->requestGet($getParams . '&page=' . $i);
                 $i++;
                 if (isset($pageData['callcase'])) {
                     foreach ($pageData['callcase'] as $value) {
                         $data['callcase'][] = $value;
                     }
                 }
-            }while(!$this->getError());
-
+            } while (!$this->getError());
         } else {
-            $data = $this->_get($getParams);
+            $data = $this->requestGet($getParams);
         }
 
         if (!isset($data['count']) && isset($data['callcase'])) {
@@ -200,7 +199,6 @@ class CallCases extends Request
         }
 
         return $data;
-
     }
 
     /**
@@ -209,8 +207,9 @@ class CallCases extends Request
      * @return array
      * @throws Exception
      */
-    public function createList(array $cases) {
-        return $this->_post(['callcases' => $cases], '/projects/' . $this->projectUuid . '/callcases-batch/', false);
+    public function createList(array $cases)
+    {
+        return $this->requestPost(['callcases' => $cases], '/projects/' . $this->projectUuid . '/callcases-batch/', false);
     }
 
     /**
@@ -219,8 +218,9 @@ class CallCases extends Request
      * @return array
      * @throws Exception
      */
-    public function updateList(array $cases) {
-        return $this->_put(['callcases' => $cases], '/projects/' . $this->projectUuid . '/callcases-batch/');
+    public function updateList(array $cases)
+    {
+        return $this->requestPut(['callcases' => $cases], '/projects/' . $this->projectUuid . '/callcases-batch/');
     }
 
     /**
@@ -247,14 +247,13 @@ class CallCases extends Request
             $data['root'] = 'objectLinks';
         }
 
-        $this->_delete($data, '/projects/' . $this->projectUuid . '/callcases-batch/');
+        $this->requestDelete($data, '/projects/' . $this->projectUuid . '/callcases-batch/');
 
         if ($this->getErrorCode()) {
             return false;
         } else {
             return true;
         }
-
     }
 
     /**
@@ -264,7 +263,7 @@ class CallCases extends Request
      */
     public function getByExtId($id)
     {
-        return $this->_get('/projects/' . $this->projectUuid . '/callcases/' . $id);
+        return $this->requestGet('/projects/' . $this->projectUuid . '/callcases/' . $id);
     }
 
     /**
@@ -278,7 +277,7 @@ class CallCases extends Request
         if (!isset($data['id'])) {
             throw new Exception('id not exist');
         }
-        $uiid = $this->_post(['callcase' => $data], '/projects/' . $this->projectUuid . '/callcases/', true);
+        $uiid = $this->requestPost(['callcase' => $data], '/projects/' . $this->projectUuid . '/callcases/', true);
 
         if ($this->getErrorCode()) {
             return false;
@@ -298,7 +297,7 @@ class CallCases extends Request
         if (!isset($data['id'])) {
             throw new Exception('id not exist');
         }
-        $this->_put(['callcase' => $data], '/projects/' . $this->projectUuid . '/callcases/');
+        $this->requestPut(['callcase' => $data], '/projects/' . $this->projectUuid . '/callcases/');
         if ($this->getErrorCode()) {
             return false;
         } else {
@@ -313,12 +312,11 @@ class CallCases extends Request
      */
     public function deleteByExtId($id)
     {
-        $this->_delete([], '/projects/' . $this->projectUuid . '/callcases/' . $id);
+        $this->requestDelete([], '/projects/' . $this->projectUuid . '/callcases/' . $id);
         if ($this->getErrorCode()) {
             return false;
         } else {
             return true;
         }
     }
-
 }

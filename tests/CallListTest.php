@@ -1,7 +1,8 @@
 <?php
 
-use suffi\naumenRest\CallList;
+namespace suffi\naumenRest\Tests;
 
+use suffi\naumenRest\CallList;
 
 class CallListTest extends TestCase
 {
@@ -30,5 +31,4 @@ class CallListTest extends TestCase
         $this->assertTrue($callList->start());
         $this->assertTrue($callList->delete());
     }
-
 }

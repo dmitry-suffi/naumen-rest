@@ -1,7 +1,8 @@
 <?php
 
-use suffi\naumenRest\News;
+namespace suffi\naumenRest\Tests;
 
+use suffi\naumenRest\News;
 
 class NewsTest extends TestCase
 {
@@ -29,7 +30,6 @@ class NewsTest extends TestCase
                 $news->delete($newsItem['uuid']);
             }
         }
-
     }
 
     public function testNews()
@@ -66,7 +66,5 @@ class NewsTest extends TestCase
         $news->delete($id);
 
         $this->assertFalse($news->get($id));
-
     }
-
 }

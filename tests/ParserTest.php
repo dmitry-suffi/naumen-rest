@@ -1,14 +1,17 @@
 <?php
 
+namespace suffi\naumenRest\Tests;
+
 use suffi\naumenRest\parser\JsonParser;
 use suffi\naumenRest\Request;
-
 
 class ParserTest extends TestCase
 {
 
     /**
+     * @param $parser
      * @return Request
+     * @throws \suffi\naumenRest\Exception
      */
     public function getRequest($parser)
     {

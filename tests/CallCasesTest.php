@@ -1,5 +1,7 @@
 <?php
 
+namespace suffi\naumenRest\Tests;
+
 use suffi\naumenRest\CallCases;
 
 class CallCasesTest extends TestCase
@@ -27,7 +29,6 @@ class CallCasesTest extends TestCase
         if (isset($cases['callcase'])) {
             $callCases->deleteList($cases['callcase']);
         }
-
     }
 
     public function testCreateEmptyCase()
@@ -77,7 +78,6 @@ class CallCasesTest extends TestCase
         $this->assertTrue($callCases->delete($case['uuid']));
 
         $this->assertFalse($callCases->get($newUiid));
-
     }
 
     public function testGetList()
@@ -100,7 +100,9 @@ class CallCasesTest extends TestCase
         $cases = $callCases->getList();
         $this->assertInternalType('array', $cases);
         $this->assertEquals($cases['count'], '2');
-        $this->assertTrue(($cases['callcase'][0]['title'] == $title1 && $cases['callcase'][1]['title'] == $title2) || ($cases['callcase'][0]['title'] == $title2 && $cases['callcase'][1]['title'] == $title1));
+        $cond1 = $cases['callcase'][0]['title'] == $title1 && $cases['callcase'][1]['title'] == $title2;
+        $cond2 = $cases['callcase'][0]['title'] == $title2 && $cases['callcase'][1]['title'] == $title1;
+        $this->assertTrue($cond1 || $cond2);
 
         $this->assertTrue($callCases->deleteList($cases['callcase']));
 
@@ -127,7 +129,6 @@ class CallCasesTest extends TestCase
         $this->assertEquals($cases['callcase'][0]['title'], $title1);
         $this->assertEquals($cases['callcase'][0]['uuid'], $newUiid1);
         $this->assertEquals($cases['callcase'][0]['state']['id'], 'adjourned');
-
     }
 
     public function testGetFullList()
@@ -147,7 +148,7 @@ class CallCasesTest extends TestCase
             ];
         }
 
-        $result = $callCases->createList($cases);
+        $callCases->createList($cases);
 
         $cases = $callCases->getList([], true);
 
@@ -300,12 +301,12 @@ class CallCasesTest extends TestCase
         $result = $callCases->createList($cases);
 
         $this->assertEquals(count($result['result']), $count);
-        
+
         foreach ($result['result'] as $item) {
             $this->assertEquals($item['code'], 'SUCCESS');
         }
 
-        foreach ($cases as $key=>$case) {
+        foreach ($cases as $key => $case) {
             $cases[$key]['comment'] = 'commentNew';
         }
 
@@ -321,6 +322,5 @@ class CallCasesTest extends TestCase
         foreach ($cases['callcase'] as $case) {
             $this->assertEquals($case['comment'], 'commentNew');
         }
-
     }
 }

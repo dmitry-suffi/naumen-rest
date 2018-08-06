@@ -38,16 +38,19 @@ class CallList extends Request
         return $this->projectUuid;
     }
 
+    /**
+     * @param $state
+     * @return bool
+     * @throws Exception
+     */
     protected function setState($state)
     {
-
-        $this->_post(['cmd' => $state], '/projects/' . $this->projectUuid . '/calllist/', false, false);
+        $this->requestPost(['cmd' => $state], '/projects/' . $this->projectUuid . '/calllist/', false, false);
         if ($this->getErrorCode()) {
             return false;
         } else {
             return true;
         }
-
     }
 
     /**
@@ -76,7 +79,6 @@ class CallList extends Request
     {
         return $this->setState('update');
     }
-
 
     /**
      * Удаление колллиста

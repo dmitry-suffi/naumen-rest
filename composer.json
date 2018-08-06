@@ -17,5 +17,10 @@
         "psr-4": {
             "suffi\\naumenRest\\": "naumenRest\\"
         }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "suffi\\naumenRest\\Tests": "tests\\"
+        }
     }
 }

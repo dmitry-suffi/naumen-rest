@@ -21,7 +21,7 @@ $id = $news->create($new);
 $new2 = [
     'uuid' => $id,
     'content' => 'Новость изменена',
-    'importance' => News::importanceNormal
+    'importance' => News::IMPORTANCE_NORMAL
 ];
 
 $news->update($new2);

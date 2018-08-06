@@ -14,17 +14,16 @@ abstract class Parser
      * @param $data
      * @return array
      */
-    abstract function parseResult($data): array;
+    abstract public function parseResult($data): array;
 
     /**
      * Добавление заголовков
      */
-    abstract function getFormatHeaders();
+    abstract public function getFormatHeaders();
 
     /**
      * Преобразование данных для отправки
      * @param $data
      */
-    abstract function prepareData($data);
-    
+    abstract public function prepareData($data);
 }
