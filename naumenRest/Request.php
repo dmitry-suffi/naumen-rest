@@ -305,9 +305,11 @@ class Request
         }
 
         if ($parse == 'location') {
-            $pmsUrl = preg_quote(trim($this->pmsUrl, '/') . '/' . $this->format, '/');
-            preg_match_all('/Location: ' . $pmsUrl . '(.*?)\/([^\/\r\n]+)\r\n/', $result, $m);
-            return $m[2][0] ?? '';
+            //$pmsUrl = preg_quote(trim($this->pmsUrl, '/') . '/' . $this->format, '/');
+            //preg_match_all('/Location: ' . $pmsUrl . '(.*?)\/([^\/\r\n]+)\r\n/', $result, $m);
+            //return $m[2][0] ?? '';
+            preg_match('#Location\:[^\n\r]*?\/callcases\/([0-9a-z]+)[\r\n]#usi', $result, $m);
+            return $m[1] ?? '';
         } else {
             if ($parse == 'parser') {
                 return $this->parser->parseResult($result);
